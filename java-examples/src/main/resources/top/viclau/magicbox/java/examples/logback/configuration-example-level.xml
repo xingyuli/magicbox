@@ -1,0 +1,45 @@
+<configuration debug="true">
+
+    <!-- ************************** Setting the context name ************************** -->
+
+    <!--
+        Every logger is attached to a logger context. By default, the logger context is called "default". However, you
+        can set a different name with the help of the <contextName> configuration directive. Note that once set, the
+        logger context name cannot be changed. Setting the context name is a simple and straightforward method in order
+        to distinguish between multiple applications logging to the same target.
+    -->
+    <contextName>myAppName</contextName>
+
+
+
+    <!-- ************************** general ************************** -->
+
+    <!-- <appender> element
+         name  - required
+         class - required
+    -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- <logger> element
+         name       - required
+
+         level      - optional
+                    possible values are: TRACE | DEBUG | INFO | WARN | ERROR | ALL | OFF | INHERITED
+
+         additivity - optional
+                    possible values are: true | false -->
+    <logger name="top.viclau.magicbox.java.examples.logback.ConfigurationExample" level="INFO" />
+
+    <!-- Strictly speaking, the level attribute is not necessary since -->
+    <!-- the level of the root level is set to DEBUG by default.       -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

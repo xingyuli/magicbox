@@ -1,0 +1,12 @@
+public abstract class InputStream
+extends Object
+implements Closeable
+
+This abstract class is the superclass of all classes representing an input stream of bytes.
+
+Applications that need to define a subclass of InputStream must always provide a method that returns the next byte of input.
+
+Since:
+    JDK1.0
+See Also:
+    BufferedInputStream, ByteArrayInputStream, DataInputStream, FilterInputStream, read(), OutputStream, PushbackInputStream

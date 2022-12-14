@@ -1,0 +1,18 @@
+<included>
+
+    <!-- Variable substitution can occur at any point in a configuration file where a value can be specified. -->
+
+    <!-- For property aName, the string "${aName}" will be replaced with the value held by the aName property -->
+
+    <!--Defining variables -->
+    <!--
+    <variable name="USER_HOME" value="home/vic" />
+    -->
+
+    <!-- When multiple variables are needed, it may be more convenient to create a separate file that will -->
+    <!-- contain all the variables.                                                                        -->
+
+    <!-- reference a resource on the classpath -->
+    <variable resource="top/viclau/magicbox/java/examples/logback/variable.properties" />
+
+</included>

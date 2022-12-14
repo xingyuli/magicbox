@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/data/jpa
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver" />
+        <!-- <property name="url" value="jdbc:h2:tcp://localhost/mem:test_springdatajpa" /> -->
+        <property name="url" value="jdbc:h2:mem:test_springdatajpa" />
+        <property name="username" value="sa" />
+        <property name="password" value="" />
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider" />
+        </property>
+        <!-- <property name="packagesToScan" value="top.viclau.magicbox.java.examples.springdata.jpa" /> -->
+
+        <!-- default location is: META-INF/persistence.xml -->
+        <!-- for demonstration purpose, we place it to a custom location -->
+        <property name="persistenceXmlLocation" value="top/viclau/magicbox/java/examples/springdata/jpa/persistence.xml" />
+
+        <property name="persistenceUnitName" value="hibernate_test_springdatajpa" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+
+    <jpa:repositories base-package="top.viclau.magicbox.java.examples.springdata.jpa" />
+
+    <bean id="crmService" class="top.viclau.magicbox.java.examples.springdata.jpa.impl.CRMServiceImpl">
+        <property name="employeeRepository" ref="employeeRepository" />
+    </bean>
+
+</beans>

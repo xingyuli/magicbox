@@ -1,0 +1,23 @@
+<configuration debug="true">
+
+    <!-- ************************** File inclusion ************************** -->
+
+    <!-- the target file MUST have its elements nested inside an <included> element -->
+    <include resource="top/viclau/magicbox/java/examples/logback/variable-substitution.xml" />
+
+
+
+    <!-- ************************** general ************************** -->
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/app.log</file>
+        <encoder>
+            <pattern>%date %contextName %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>
