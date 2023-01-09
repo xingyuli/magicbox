@@ -32,6 +32,13 @@ dependencies {
     runtimeOnly("com.sun.mail:javax.mail:1.6.2")
 
 
+    /* ***** jackson ***** */
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
+
+    /* ***** snakeyaml ***** */
+    testImplementation("org.yaml:snakeyaml:1.33")
+
+
     /* ***** spring data jpa ***** */
 
     // Java 8 Compatible
