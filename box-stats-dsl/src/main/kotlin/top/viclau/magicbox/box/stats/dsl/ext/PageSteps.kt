@@ -10,7 +10,7 @@ package top.viclau.magicbox.box.stats.dsl.ext
 import top.viclau.magicbox.box.stats.dsl.GroupStep
 import top.viclau.magicbox.box.stats.dsl.OrderStep
 import top.viclau.magicbox.box.stats.dsl.PageStep
-import top.viclau.magicbox.box.stats.dsl.model.PageReq
+import top.viclau.magicbox.box.stats.model.PageReq
 
 fun <DEST_TYPE : Any> GroupStep<DEST_TYPE>.page(page: Int, size: Int): PageStep<DEST_TYPE> = order {}.page(page, size)
 

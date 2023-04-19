@@ -5,7 +5,7 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model.superset
+package top.viclau.magicbox.box.stats.integration.superset
 
 import com.google.gson.GsonBuilder
 import io.ktor.client.*
@@ -19,9 +19,9 @@ import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
-import top.viclau.magicbox.box.stats.dsl.ext.superset.init
-import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.QueryDataRequest
-import top.viclau.magicbox.box.stats.dsl.model.superset.security.LoginRequest
+import top.viclau.magicbox.box.stats.ext.superset.init
+import top.viclau.magicbox.box.stats.integration.superset.chart.data.QueryDataRequest
+import top.viclau.magicbox.box.stats.integration.superset.security.LoginRequest
 import java.util.concurrent.ConcurrentHashMap
 
 // hide implementation detail on ktor-client-logging

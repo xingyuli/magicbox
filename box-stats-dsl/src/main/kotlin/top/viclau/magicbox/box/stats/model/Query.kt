@@ -5,13 +5,13 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model
+package top.viclau.magicbox.box.stats.model
 
 import com.google.gson.GsonBuilder
-import top.viclau.magicbox.box.stats.dsl.ext.ownerType
-import top.viclau.magicbox.box.stats.dsl.metadata.Dataset
-import top.viclau.magicbox.box.stats.dsl.model.operator.*
-import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
+import top.viclau.magicbox.box.stats.ext.ownerType
+import top.viclau.magicbox.box.stats.model.metadata.Dataset
+import top.viclau.magicbox.box.stats.model.operator.*
+import top.viclau.magicbox.box.stats.model.support.DatasetResolver
 import top.viclau.magicbox.box.stats.engine.QueryEngine
 import java.math.BigDecimal
 import java.math.RoundingMode

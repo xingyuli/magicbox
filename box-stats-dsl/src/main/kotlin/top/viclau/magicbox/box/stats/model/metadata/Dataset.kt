@@ -5,9 +5,9 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.metadata
+package top.viclau.magicbox.box.stats.model.metadata
 
-import top.viclau.magicbox.box.stats.dsl.model.operator.QueryRequest
+import top.viclau.magicbox.box.stats.model.operator.QueryRequest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -34,10 +34,22 @@ private fun Dataset.isResolverValid(): Boolean {
 }
 
 fun Dataset.meetAttributeCombinationRequirements(): Dataset.CheckAttributeCombinationResult {
-    return if (id.isNotEmpty() && isResolverUndefined()) Dataset.CheckAttributeCombinationResult(ok = true, requiresCustomFactory = false)
-    else if (id.isNotEmpty() && !isResolverUndefined())  Dataset.CheckAttributeCombinationResult(ok = false, requiresCustomFactory = false)
-    else if (id.isEmpty() && isResolverUndefined())      Dataset.CheckAttributeCombinationResult(ok = true, requiresCustomFactory = true)
-    else /* id.isEmpty() && !isResolverUndefined() */    Dataset.CheckAttributeCombinationResult(ok = isResolverValid(), requiresCustomFactory = false)
+    return if (id.isNotEmpty() && isResolverUndefined()) Dataset.CheckAttributeCombinationResult(
+        ok = true,
+        requiresCustomFactory = false
+    )
+    else if (id.isNotEmpty() && !isResolverUndefined()) Dataset.CheckAttributeCombinationResult(
+        ok = false,
+        requiresCustomFactory = false
+    )
+    else if (id.isEmpty() && isResolverUndefined()) Dataset.CheckAttributeCombinationResult(
+        ok = true,
+        requiresCustomFactory = true
+    )
+    else /* id.isEmpty() && !isResolverUndefined() */ Dataset.CheckAttributeCombinationResult(
+        ok = isResolverValid(),
+        requiresCustomFactory = false
+    )
 }
 
 interface DatasetIdResolver {

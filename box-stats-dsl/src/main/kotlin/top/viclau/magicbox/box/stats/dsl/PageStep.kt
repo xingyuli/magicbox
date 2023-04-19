@@ -7,7 +7,7 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.dsl.model.PageReq
+import top.viclau.magicbox.box.stats.model.PageReq
 
 class PageStep<DEST_TYPE : Any>(private val dsl: DslBuilder<DEST_TYPE>) : Builder<PageReq> {
 

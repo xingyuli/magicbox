@@ -7,7 +7,7 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.dsl.model.*
+import top.viclau.magicbox.box.stats.model.*
 import kotlin.reflect.KClass
 
 typealias Builder<T> = () -> T

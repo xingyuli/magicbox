@@ -9,7 +9,7 @@ package top.viclau.magicbox.box.stats.dsl.ext
 
 import top.viclau.magicbox.box.stats.dsl.GroupStep
 import top.viclau.magicbox.box.stats.dsl.OrderStep
-import top.viclau.magicbox.box.stats.dsl.model.Direction
+import top.viclau.magicbox.box.stats.model.Direction
 import kotlin.reflect.KProperty1
 
 fun <DEST_TYPE : Any> GroupStep<DEST_TYPE>.orderBy(

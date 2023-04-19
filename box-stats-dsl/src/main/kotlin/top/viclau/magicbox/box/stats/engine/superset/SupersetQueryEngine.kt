@@ -1,6 +1,6 @@
 package top.viclau.magicbox.box.stats.engine.superset
 
-import top.viclau.magicbox.box.stats.dsl.model.superset.SupersetClient
+import top.viclau.magicbox.box.stats.integration.superset.SupersetClient
 import top.viclau.magicbox.box.stats.engine.QueryEngine
 import top.viclau.magicbox.box.stats.engine.QueryRequest
 

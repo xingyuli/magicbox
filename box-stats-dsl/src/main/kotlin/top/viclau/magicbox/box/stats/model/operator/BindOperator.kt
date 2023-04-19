@@ -5,13 +5,13 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model.operator
+package top.viclau.magicbox.box.stats.model.operator
 
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.*
-import top.viclau.magicbox.box.stats.dsl.model.BaseProperty
-import top.viclau.magicbox.box.stats.dsl.model.GroupByExtract
-import top.viclau.magicbox.box.stats.dsl.model.Query
+import top.viclau.magicbox.box.stats.model.BaseProperty
+import top.viclau.magicbox.box.stats.model.GroupByExtract
+import top.viclau.magicbox.box.stats.model.Query
 import kotlin.reflect.full.primaryConstructor
 
 class BindOperator<DEST_TYPE : Any>(query: Query<DEST_TYPE>) :

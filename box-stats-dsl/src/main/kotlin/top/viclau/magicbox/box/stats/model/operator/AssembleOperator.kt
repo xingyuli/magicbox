@@ -5,10 +5,10 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model.operator
+package top.viclau.magicbox.box.stats.model.operator
 
-import top.viclau.magicbox.box.stats.dsl.ext.ownerType
-import top.viclau.magicbox.box.stats.dsl.model.*
+import top.viclau.magicbox.box.stats.ext.ownerType
+import top.viclau.magicbox.box.stats.model.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 

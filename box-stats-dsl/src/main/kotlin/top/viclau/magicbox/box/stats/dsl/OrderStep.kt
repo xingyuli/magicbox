@@ -7,8 +7,8 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.dsl.model.Direction
-import top.viclau.magicbox.box.stats.dsl.model.Order
+import top.viclau.magicbox.box.stats.model.Direction
+import top.viclau.magicbox.box.stats.model.Order
 import kotlin.reflect.KProperty1
 
 class OrderStep<DEST_TYPE : Any>(private val dsl: DslBuilder<DEST_TYPE>) : Builder<Order?> {

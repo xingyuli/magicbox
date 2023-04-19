@@ -8,6 +8,6 @@
 package top.viclau.magicbox.box.stats.dsl.ext
 
 import top.viclau.magicbox.box.stats.dsl.PageStep
-import top.viclau.magicbox.box.stats.dsl.model.PageResult
+import top.viclau.magicbox.box.stats.model.PageResult
 
 fun <DEST_TYPE : Any> PageStep<DEST_TYPE>.execute(): PageResult<DEST_TYPE> = summary {}.execute()

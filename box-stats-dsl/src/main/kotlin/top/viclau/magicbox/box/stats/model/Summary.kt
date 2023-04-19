@@ -5,6 +5,6 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model
+package top.viclau.magicbox.box.stats.model
 
 class Summary<DEST_TYPE>(private val with: (DEST_TYPE) -> Unit)

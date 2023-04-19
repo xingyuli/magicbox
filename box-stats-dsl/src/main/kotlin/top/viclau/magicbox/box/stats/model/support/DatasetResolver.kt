@@ -1,10 +1,10 @@
-package top.viclau.magicbox.box.stats.dsl.support
+package top.viclau.magicbox.box.stats.model.support
 
-import top.viclau.magicbox.box.stats.dsl.metadata.Dataset
-import top.viclau.magicbox.box.stats.dsl.metadata.DatasetIdResolver
-import top.viclau.magicbox.box.stats.dsl.metadata.isResolverUndefined
-import top.viclau.magicbox.box.stats.dsl.metadata.meetAttributeCombinationRequirements
-import top.viclau.magicbox.box.stats.dsl.model.operator.QueryRequest
+import top.viclau.magicbox.box.stats.model.metadata.Dataset
+import top.viclau.magicbox.box.stats.model.metadata.DatasetIdResolver
+import top.viclau.magicbox.box.stats.model.metadata.isResolverUndefined
+import top.viclau.magicbox.box.stats.model.metadata.meetAttributeCombinationRequirements
+import top.viclau.magicbox.box.stats.model.operator.QueryRequest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 

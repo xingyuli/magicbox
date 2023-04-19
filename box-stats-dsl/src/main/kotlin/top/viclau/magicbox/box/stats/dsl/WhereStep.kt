@@ -7,11 +7,11 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.dsl.ext.isNotEmpty
-import top.viclau.magicbox.box.stats.dsl.ext.toSeparatedSet
-import top.viclau.magicbox.box.stats.dsl.model.SqlFilter
-import top.viclau.magicbox.box.stats.dsl.model.TimeRangeOnColumn
-import top.viclau.magicbox.box.stats.dsl.model.Where
+import top.viclau.magicbox.box.stats.ext.isNotEmpty
+import top.viclau.magicbox.box.stats.ext.toSeparatedSet
+import top.viclau.magicbox.box.stats.model.SqlFilter
+import top.viclau.magicbox.box.stats.model.TimeRangeOnColumn
+import top.viclau.magicbox.box.stats.model.Where
 import java.time.LocalDateTime
 
 class WhereStep<DEST_TYPE : Any>(private val dsl: DslBuilder<DEST_TYPE>) : Selectable<DEST_TYPE> by dsl,

@@ -7,9 +7,9 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.dsl.model.Group
-import top.viclau.magicbox.box.stats.dsl.model.GroupBy
-import top.viclau.magicbox.box.stats.dsl.model.GroupByExtract
+import top.viclau.magicbox.box.stats.model.Group
+import top.viclau.magicbox.box.stats.model.GroupBy
+import top.viclau.magicbox.box.stats.model.GroupByExtract
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 

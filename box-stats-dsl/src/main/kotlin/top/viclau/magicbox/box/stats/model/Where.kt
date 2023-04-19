@@ -5,9 +5,10 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model
+package top.viclau.magicbox.box.stats.model
 
-import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.ChartDataFilter
+// TODO viclau solve engine specific dependency
+import top.viclau.magicbox.box.stats.integration.superset.chart.data.ChartDataFilter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

@@ -5,7 +5,7 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.ext
+package top.viclau.magicbox.box.stats.ext
 
 import kotlin.jvm.internal.CallableReference
 import kotlin.reflect.KClass

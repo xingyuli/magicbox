@@ -7,9 +7,9 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.dsl.model.AliasedProperty
-import top.viclau.magicbox.box.stats.dsl.model.ComputedProperty
-import top.viclau.magicbox.box.stats.dsl.model.Select
+import top.viclau.magicbox.box.stats.model.AliasedProperty
+import top.viclau.magicbox.box.stats.model.ComputedProperty
+import top.viclau.magicbox.box.stats.model.Select
 import java.math.BigDecimal
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1

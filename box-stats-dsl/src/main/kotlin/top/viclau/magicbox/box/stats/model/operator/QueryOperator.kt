@@ -5,20 +5,20 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model.operator
+package top.viclau.magicbox.box.stats.model.operator
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import top.viclau.magicbox.box.stats.dsl.ext.superset.queryData
-import top.viclau.magicbox.box.stats.dsl.model.*
-import top.viclau.magicbox.box.stats.dsl.model.ChartDataFilterShim
-import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Datasource
-import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Queries
-import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.QueryDataRequest
-import top.viclau.magicbox.box.stats.dsl.model.superset.SupersetClient
-import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
+import top.viclau.magicbox.box.stats.ext.superset.queryData
+import top.viclau.magicbox.box.stats.model.*
+import top.viclau.magicbox.box.stats.model.ChartDataFilterShim
+import top.viclau.magicbox.box.stats.integration.superset.chart.data.Datasource
+import top.viclau.magicbox.box.stats.integration.superset.chart.data.Queries
+import top.viclau.magicbox.box.stats.integration.superset.chart.data.QueryDataRequest
+import top.viclau.magicbox.box.stats.integration.superset.SupersetClient
+import top.viclau.magicbox.box.stats.model.support.DatasetResolver
 import top.viclau.magicbox.box.stats.engine.superset.SupersetQueryEngine
 
 data class QueryResponse(

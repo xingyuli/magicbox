@@ -5,9 +5,9 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model.operator
+package top.viclau.magicbox.box.stats.model.operator
 
-import top.viclau.magicbox.box.stats.dsl.model.Query
+import top.viclau.magicbox.box.stats.model.Query
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 

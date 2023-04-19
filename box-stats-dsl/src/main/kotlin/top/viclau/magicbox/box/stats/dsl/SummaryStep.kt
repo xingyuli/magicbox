@@ -7,8 +7,8 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.dsl.model.PageResult
-import top.viclau.magicbox.box.stats.dsl.model.Summary
+import top.viclau.magicbox.box.stats.model.PageResult
+import top.viclau.magicbox.box.stats.model.Summary
 
 class SummaryStep<DEST_TYPE : Any>(private val dsl: DslBuilder<DEST_TYPE>) : Executable<DEST_TYPE>,
     Builder<Summary<DEST_TYPE>?> {
