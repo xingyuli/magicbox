@@ -17,7 +17,7 @@ import top.viclau.magicbox.box.stats.dsl.model.ChartDataFilterShim
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Datasource
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Queries
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.QueryDataRequest
-import top.viclau.magicbox.box.stats.dsl.model.superset.api.SupersetClient
+import top.viclau.magicbox.box.stats.dsl.model.superset.SupersetClient
 import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
 
 data class QueryResponse(

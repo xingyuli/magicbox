@@ -11,7 +11,7 @@ import com.google.gson.GsonBuilder
 import top.viclau.magicbox.box.stats.dsl.ext.ownerType
 import top.viclau.magicbox.box.stats.dsl.metadata.Dataset
 import top.viclau.magicbox.box.stats.dsl.model.operator.*
-import top.viclau.magicbox.box.stats.dsl.model.superset.api.SupersetClient
+import top.viclau.magicbox.box.stats.dsl.model.superset.SupersetClient
 import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
 import java.math.BigDecimal
 import java.math.RoundingMode

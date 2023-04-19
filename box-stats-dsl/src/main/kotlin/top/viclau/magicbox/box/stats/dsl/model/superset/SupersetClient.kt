@@ -5,7 +5,7 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.dsl.model.superset.api
+package top.viclau.magicbox.box.stats.dsl.model.superset
 
 import com.google.gson.GsonBuilder
 import io.ktor.client.*
@@ -24,11 +24,21 @@ import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.QueryDataRequ
 import top.viclau.magicbox.box.stats.dsl.model.superset.security.LoginRequest
 import java.util.concurrent.ConcurrentHashMap
 
-class SupersetClient(private val config: Config, logLevel: LogLevel = LogLevel.NONE) : AutoCloseable {
+// hide implementation detail on ktor-client-logging
+enum class LogContent(internal val logLevel: LogLevel) {
+    ALL(LogLevel.ALL),
+    HEADERS(LogLevel.HEADERS),
+    BODY(LogLevel.BODY),
+    INFO(LogLevel.INFO),
+    NONE(LogLevel.NONE)
+}
+
+class SupersetClient(private val config: Config, logContent: LogContent = LogContent.NONE) : AutoCloseable {
 
     private val log: org.slf4j.Logger = LoggerFactory.getLogger(SupersetClient::class.java)
     private val _gson = GsonBuilder().init().create()
 
+    // TODO viclau - robustness - ktor client timeout setting
     private val client: HttpClient
 
     // TODO add module box-common: LoadOnFailureCache
@@ -45,7 +55,7 @@ class SupersetClient(private val config: Config, logLevel: LogLevel = LogLevel.N
             }
             install(Logging) {
                 logger = Logger.DEFAULT
-                level = logLevel
+                level = logContent.logLevel
             }
         }
     }
@@ -127,6 +137,7 @@ class SupersetClient(private val config: Config, logLevel: LogLevel = LogLevel.N
 //        )
 
             if (response.status != HttpStatusCode.OK) {
+                // TODO fallback support when failure (including timed out)
                 // TODO use custom exception (and, superset client should be placed in dedicated package)
                 throw RuntimeException(response.bodyAsText())
             }

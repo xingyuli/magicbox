@@ -5,7 +5,7 @@ import com.google.gson.FieldNamingStrategy
 import com.google.gson.GsonBuilder
 import top.viclau.magicbox.box.stats.dsl.ext.StringCase
 import top.viclau.magicbox.box.stats.dsl.ext.snakeToCamelCase
-import top.viclau.magicbox.box.stats.dsl.model.superset.api.SupersetClient
+import top.viclau.magicbox.box.stats.dsl.model.superset.SupersetClient
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.ChartDataFilter
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Datasource
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Queries
