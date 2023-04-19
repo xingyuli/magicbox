@@ -10,6 +10,7 @@ import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.ChartDataFilt
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Datasource
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Queries
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.QueryDataRequest
+import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -39,21 +40,21 @@ suspend fun <T : Any> SupersetClient.ChartApi.queryData(
 }
 
 suspend fun <T : Any> SupersetClient.ChartApi.queryTable(
-    datasource: Datasource,
-    // TODO viclau t:core p:high - DatasetIdResolver - could be annotated with @Dataset
-    tableType: KClass<T>,
+    dataset: KClass<T>,
     filters: List<ChartDataFilter>,
     namingCase: StringCase = StringCase.IDENTITY,
     force: Boolean = true,
     requestId: String? = null
 ): List<T> {
+    val datasource = Datasource.table(DatasetResolver.resolveId(dataset, null).toInt())
+
     val queries = Queries().apply {
-        columns = tableType.members.filterIsInstance<KProperty<*>>().map { namingCase(it.name) }
+        columns = dataset.members.filterIsInstance<KProperty<*>>().map { namingCase(it.name) }
         this.filters = filters
     }
 
     val request = QueryDataRequest(datasource = datasource, force = force, queries = listOf(queries))
 
     val response = queryData(request, requestId)
-    return response.result[0].data.map { gsonFactory[namingCase]!!.fromJson(it, tableType.java) }
+    return response.result[0].data.map { gsonFactory[namingCase]!!.fromJson(it, dataset.java) }
 }

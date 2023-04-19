@@ -14,7 +14,7 @@ import kotlin.reflect.KProperty1
 
 data class QueryRequest(
     val id: ReqId,
-    val source: KClass<*>,
+    val dataset: KClass<*>,
     val where: Where,
     val metrics: MutableList<MetricRequest> = mutableListOf()
 ) {

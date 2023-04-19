@@ -11,7 +11,6 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import top.viclau.magicbox.box.stats.dsl.annotation.Dataset
 import top.viclau.magicbox.box.stats.dsl.ext.superset.queryData
 import top.viclau.magicbox.box.stats.dsl.model.*
 import top.viclau.magicbox.box.stats.dsl.model.ChartDataFilterShim
@@ -19,6 +18,7 @@ import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Datasource
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Queries
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.QueryDataRequest
 import top.viclau.magicbox.box.stats.dsl.model.superset.api.SupersetClient
+import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
 
 data class QueryResponse(
     val request: QueryRequest,
@@ -33,6 +33,7 @@ class QueryOperator<DEST_TYPE : Any>(query: Query<DEST_TYPE>) :
 
     override fun invoke(requests: List<QueryRequest>): List<QueryResponse> {
         return client.use {
+            // TODO viclau t:core p:low - performance - how to control coroutines' concurrency level?
             runBlocking {
                 requests.map { req ->
                     async { executeSingleRequest(req) }
@@ -41,21 +42,8 @@ class QueryOperator<DEST_TYPE : Any>(query: Query<DEST_TYPE>) :
         }
     }
 
-    // TODO viclau t:core p:high - DatasetIdResolver - read from external configuration file
-    private val datasetMappings = mapOf(
-        "stats-potential-customer" to 392,
-        "stats-sale-order" to 397,
-        "stats-sale-report" to 398,
-        "stats-follow" to 368,
-        "stats-potential-customer-follow-overdue" to 394,
-        "stats-follow-defeat" to 389,
-        "stats-passenger-flow" to 391,
-        "stats-trial-drive" to 401
-    )
-
     private suspend fun executeSingleRequest(req: QueryRequest): QueryResponse {
-        val datasetName = req.source.annotations.filterIsInstance<Dataset>().first().name
-        val datasource = Datasource.table(datasetMappings[datasetName]!!)
+        val datasource = Datasource.table(DatasetResolver.resolveId(req.dataset, query).toInt())
 
         val queries = Queries()
 
@@ -100,7 +88,7 @@ class QueryOperator<DEST_TYPE : Any>(query: Query<DEST_TYPE>) :
         val responseData = client.chartApi().queryData(
             // TODO viclau t:engine p:low - customizable request protocol - superset only, the `force` parameter could be configured externally
             QueryDataRequest(datasource = datasource, force = true, queries = listOf(queries)),
-            req.source,
+            req.dataset,
             requestId = req.id.toString()
         )
 
