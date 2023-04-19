@@ -19,6 +19,7 @@ import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.Queries
 import top.viclau.magicbox.box.stats.dsl.model.superset.chart.data.QueryDataRequest
 import top.viclau.magicbox.box.stats.dsl.model.superset.SupersetClient
 import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
+import top.viclau.magicbox.box.stats.engine.superset.SupersetQueryEngine
 
 data class QueryResponse(
     val request: QueryRequest,
@@ -29,7 +30,7 @@ data class QueryResponse(
 class QueryOperator<DEST_TYPE : Any>(query: Query<DEST_TYPE>) :
     Operator<DEST_TYPE, List<QueryRequest>, List<QueryResponse>>(query) {
 
-    private val client = SupersetClient(query.config.supersetConfig)
+    private val client = SupersetClient(query.config.getEngineConfig(SupersetQueryEngine.Config::class)!!.clientConfig)
 
     override fun invoke(requests: List<QueryRequest>): List<QueryResponse> {
         return client.use {
@@ -43,7 +44,7 @@ class QueryOperator<DEST_TYPE : Any>(query: Query<DEST_TYPE>) :
     }
 
     private suspend fun executeSingleRequest(req: QueryRequest): QueryResponse {
-        val datasource = Datasource.table(DatasetResolver.resolveId(req.dataset, query).toInt())
+        val datasource = Datasource.table(DatasetResolver.resolveId(req.dataset, req).toInt())
 
         val queries = Queries()
 

@@ -11,8 +11,8 @@ import com.google.gson.GsonBuilder
 import top.viclau.magicbox.box.stats.dsl.ext.ownerType
 import top.viclau.magicbox.box.stats.dsl.metadata.Dataset
 import top.viclau.magicbox.box.stats.dsl.model.operator.*
-import top.viclau.magicbox.box.stats.dsl.model.superset.SupersetClient
 import top.viclau.magicbox.box.stats.dsl.support.DatasetResolver
+import top.viclau.magicbox.box.stats.engine.QueryEngine
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.reflect.KClass
@@ -24,7 +24,7 @@ class QueryValidationException(message: String) : RuntimeException(message)
 
 class Query<DEST_TYPE : Any>(
     val destTypeClass: KClass<DEST_TYPE>,
-    val config: QueryConfig,
+    val config: Config,
     val selectWheres: List<SelectWhere<DEST_TYPE>>,
     val group: Group<DEST_TYPE>,
     // TODO viclau how to paging if `order` is not specified?
@@ -120,44 +120,62 @@ class Query<DEST_TYPE : Any>(
 
     // TODO later - introduce concept: ExecutionPlan
 
-}
+    class Config private constructor(
+        ratePrecision: Int,
+        /**
+         * config type to config
+         */
+        private val engineConfigs: Map<KClass<*>, QueryEngine.Config<*>>
+    ) {
 
-// TODO viclau refactoring - move to Query.Config
-interface QueryConfig {
-    // TODO viclau t:engine p:low - encapsulate in SupersetQueryEngine.Config { clientConfig: SupersetClient.Config }
-    val supersetConfig: SupersetClient.Config
-    val rateFn: (Number?, Number?) -> BigDecimal
-}
+        val rateFn: (Number?, Number?) -> BigDecimal = DivideAsDecimal(ratePrecision)
 
-// TODO viclau refactoring - move to Query.DefaultConfig
-class DefaultQueryConfig(override val supersetConfig: SupersetClient.Config, precision: Int) : QueryConfig {
-
-    override val rateFn: (Number?, Number?) -> BigDecimal = DivideAsDecimal(precision)
-
-    class DivideAsDecimal(private val precision: Int) : (Number?, Number?) -> BigDecimal {
-
-        override fun invoke(dividend: Number?, divisor: Number?): BigDecimal {
-            if (divisor == null || dividend == null || divisor.isZero()) {
-                return BigDecimal.ZERO.setScale(precision, RoundingMode.HALF_UP)
-            }
-
-            val convertedDividend = BigDecimal(dividend.toString())
-            val convertedDivisor = BigDecimal(divisor.toString())
-
-            return convertedDividend.divide(convertedDivisor, precision, RoundingMode.HALF_UP)
+        fun <T : QueryEngine.Config<*>> getEngineConfig(configType: KClass<T>): T? {
+            val engineConfig = engineConfigs[configType]
+            @Suppress("UNCHECKED_CAST")
+            return engineConfig as? T
         }
 
-        private fun Number.isZero(): Boolean = when (this) {
-            is Short -> this.toInt() == 0
-            is Int -> this == 0
-            is Long -> this.toInt() == 0
-            else -> {
-                val convertedNum = BigDecimal(toString())
-                BigDecimal.ZERO.setScale(convertedNum.scale(), RoundingMode.HALF_UP).equals(convertedNum)
+        class DivideAsDecimal(private val precision: Int) : (Number?, Number?) -> BigDecimal {
+
+            override fun invoke(dividend: Number?, divisor: Number?): BigDecimal {
+                if (divisor == null || dividend == null || divisor.isZero()) {
+                    return BigDecimal.ZERO.setScale(precision, RoundingMode.HALF_UP)
+                }
+
+                val convertedDividend = BigDecimal(dividend.toString())
+                val convertedDivisor = BigDecimal(divisor.toString())
+
+                return convertedDividend.divide(convertedDivisor, precision, RoundingMode.HALF_UP)
             }
+
+            private fun Number.isZero(): Boolean = when (this) {
+                is Short -> this.toInt() == 0
+                is Int -> this == 0
+                is Long -> this.toInt() == 0
+                else -> {
+                    val convertedNum = BigDecimal(toString())
+                    BigDecimal.ZERO.setScale(convertedNum.scale(), RoundingMode.HALF_UP).equals(convertedNum)
+                }
+            }
+
+        }
+
+        class Builder(private val ratePrecision: Int) : () -> Config {
+
+            private val engineConfigs = mutableMapOf<KClass<*>, QueryEngine.Config<*>>()
+
+            fun withEngineConfig(config: QueryEngine.Config<*>): Builder = apply {
+//                val configSuperType = config::class.supertypes.first { it.classifier == QueryEngine.Config::class }
+//                val configForEngineType = configSuperType.arguments[0].type!!.classifier!!
+//                engineConfigs[configForEngineType] = config
+                engineConfigs[config::class] = config
+            }
+
+            override fun invoke(): Config = Config(ratePrecision, engineConfigs)
+
         }
 
     }
 
 }
-

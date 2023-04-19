@@ -7,7 +7,7 @@
 
 package top.viclau.magicbox.box.stats.dsl.metadata
 
-import top.viclau.magicbox.box.stats.dsl.model.Query
+import top.viclau.magicbox.box.stats.dsl.model.operator.QueryRequest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -41,7 +41,7 @@ fun Dataset.meetAttributeCombinationRequirements(): Dataset.CheckAttributeCombin
 }
 
 interface DatasetIdResolver {
-    fun resolve(name: String, query: Query<*>?): String?
+    fun resolve(name: String, request: QueryRequest?): String?
 }
 
 

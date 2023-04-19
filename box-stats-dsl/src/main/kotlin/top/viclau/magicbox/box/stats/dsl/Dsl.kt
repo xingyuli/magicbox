@@ -23,7 +23,7 @@ interface Executable<DEST_TYPE> {
 
 class SelectWhereStepTuple<DEST_TYPE : Any>(val select: SelectStep<DEST_TYPE>, val where: WhereStep<DEST_TYPE>)
 
-class DslBuilder<DEST_TYPE : Any>(private val destTypeClass: KClass<DEST_TYPE>, val config: QueryConfig) : Selectable<DEST_TYPE>,
+class DslBuilder<DEST_TYPE : Any>(private val destTypeClass: KClass<DEST_TYPE>, val config: Query.Config) : Selectable<DEST_TYPE>,
     Builder<Query<DEST_TYPE>> {
 
     private val selectWheres = mutableListOf<SelectWhereStepTuple<DEST_TYPE>>()
@@ -57,6 +57,6 @@ class DslBuilder<DEST_TYPE : Any>(private val destTypeClass: KClass<DEST_TYPE>, 
 
 }
 
-fun <DEST_TYPE : Any> statsDsl(kClass: KClass<DEST_TYPE>, config: QueryConfig): DslBuilder<DEST_TYPE> {
+fun <DEST_TYPE : Any> statsDsl(kClass: KClass<DEST_TYPE>, config: Query.Config): DslBuilder<DEST_TYPE> {
     return DslBuilder(kClass, config)
 }
