@@ -7,68 +7,31 @@
 
 package top.viclau.magicbox.box.stats.integration.superset
 
-import com.google.gson.GsonBuilder
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.serialization.gson.*
 import kotlinx.coroutines.runBlocking
-import org.slf4j.LoggerFactory
-import top.viclau.magicbox.box.stats.ext.superset.init
+import top.viclau.magicbox.box.stats.integration.BaseHttpClient
+import top.viclau.magicbox.box.stats.integration.LogContent
 import top.viclau.magicbox.box.stats.integration.superset.chart.data.QueryDataRequest
 import top.viclau.magicbox.box.stats.integration.superset.security.LoginRequest
 import java.util.concurrent.ConcurrentHashMap
 
-// hide implementation detail on ktor-client-logging
-enum class LogContent(internal val logLevel: LogLevel) {
-    ALL(LogLevel.ALL),
-    HEADERS(LogLevel.HEADERS),
-    BODY(LogLevel.BODY),
-    INFO(LogLevel.INFO),
-    NONE(LogLevel.NONE)
-}
-
-class SupersetClient(private val config: Config, logContent: LogContent = LogContent.NONE) : AutoCloseable {
-
-    private val log: org.slf4j.Logger = LoggerFactory.getLogger(SupersetClient::class.java)
-    private val _gson = GsonBuilder().init().create()
-
-    // TODO viclau - robustness - ktor client timeout setting
-    private val client: HttpClient
+class SupersetClient(private val config: Config, logContent: LogContent = LogContent.NONE) :
+    BaseHttpClient(logContent) {
 
     // TODO add module box-common: LoadOnFailureCache
     private val accessToken: String by lazy {
         runBlocking { securityApi().login() }.access_token
     }
 
-    init {
-        client = HttpClient(CIO) {
-            install(ContentNegotiation) {
-                gson {
-                    init()
-                }
-            }
-            install(Logging) {
-                logger = Logger.DEFAULT
-                level = logContent.logLevel
-            }
-        }
-    }
-
-    override fun close() {
-        client.close()
-    }
-
-    /**
-     * endpoint:
-     *   http|https://host/api/v1
-     */
-    data class Config(val endpoint: String, val username: String, val password: String, val provider: String = "db")
+    data class Config(
+        /**
+         * In shape of: `http|https://host/api/v1`
+         */
+        val endpoint: String, val username: String, val password: String, val provider: String = "db"
+    )
 
     private fun securityApi() = SecurityApi()
 
@@ -115,9 +78,7 @@ class SupersetClient(private val config: Config, logContent: LogContent = LogCon
 
         suspend fun queryData(request: QueryDataRequest, requestId: String? = null): QueryDataRequest.Response {
             val response = client.post("${base}/data") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer $accessToken")
-                }
+                bearerAuth(accessToken)
 
                 contentType(ContentType.Application.Json)
                 log.info("{} : {}", requestId ?: "(unspecified request id)", _gson.toJson(request))
@@ -138,7 +99,7 @@ class SupersetClient(private val config: Config, logContent: LogContent = LogCon
 
             if (response.status != HttpStatusCode.OK) {
                 // TODO fallback support when failure (including timed out)
-                // TODO use custom exception (and, superset client should be placed in dedicated package)
+                // TODO viclau use custom exception
                 throw RuntimeException(response.bodyAsText())
             }
 

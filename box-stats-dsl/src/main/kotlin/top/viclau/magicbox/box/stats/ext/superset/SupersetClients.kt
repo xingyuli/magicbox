@@ -5,6 +5,7 @@ import com.google.gson.FieldNamingStrategy
 import com.google.gson.GsonBuilder
 import top.viclau.magicbox.box.stats.ext.StringCase
 import top.viclau.magicbox.box.stats.ext.snakeToCamelCase
+import top.viclau.magicbox.box.stats.integration.init
 import top.viclau.magicbox.box.stats.integration.superset.SupersetClient
 import top.viclau.magicbox.box.stats.integration.superset.chart.data.ChartDataFilter
 import top.viclau.magicbox.box.stats.integration.superset.chart.data.Datasource
@@ -13,8 +14,6 @@ import top.viclau.magicbox.box.stats.integration.superset.chart.data.QueryDataRe
 import top.viclau.magicbox.box.stats.model.support.DatasetResolver
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
-
-internal fun GsonBuilder.init() = disableHtmlEscaping()
 
 private val gsonFactory = StringCase.values().associateWith {
     GsonBuilder().apply {
