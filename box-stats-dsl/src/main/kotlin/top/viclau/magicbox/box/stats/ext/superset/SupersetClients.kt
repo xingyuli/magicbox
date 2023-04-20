@@ -3,21 +3,21 @@ package top.viclau.magicbox.box.stats.ext.superset
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.FieldNamingStrategy
 import com.google.gson.GsonBuilder
+import top.viclau.magicbox.box.client.http.initForHttpClient
+import top.viclau.magicbox.box.client.http.superset.SupersetClient
+import top.viclau.magicbox.box.client.http.superset.chart.data.ChartDataFilter
+import top.viclau.magicbox.box.client.http.superset.chart.data.Datasource
+import top.viclau.magicbox.box.client.http.superset.chart.data.Queries
+import top.viclau.magicbox.box.client.http.superset.chart.data.QueryDataRequest
 import top.viclau.magicbox.box.stats.ext.StringCase
 import top.viclau.magicbox.box.stats.ext.snakeToCamelCase
-import top.viclau.magicbox.box.stats.integration.init
-import top.viclau.magicbox.box.stats.integration.superset.SupersetClient
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.ChartDataFilter
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.Datasource
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.Queries
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.QueryDataRequest
 import top.viclau.magicbox.box.stats.model.support.DatasetResolver
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 private val gsonFactory = StringCase.values().associateWith {
     GsonBuilder().apply {
-        init()
+        initForHttpClient()
         setFieldNamingStrategy(it.gsonFieldNamingStrategy)
     }.create()
 }

@@ -11,15 +11,15 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import top.viclau.magicbox.box.stats.ext.superset.queryData
-import top.viclau.magicbox.box.stats.model.*
-import top.viclau.magicbox.box.stats.model.ChartDataFilterShim
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.Datasource
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.Queries
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.QueryDataRequest
-import top.viclau.magicbox.box.stats.integration.superset.SupersetClient
-import top.viclau.magicbox.box.stats.model.support.DatasetResolver
+import top.viclau.magicbox.box.client.http.superset.SupersetClient
+import top.viclau.magicbox.box.client.http.superset.chart.data.Datasource
+import top.viclau.magicbox.box.client.http.superset.chart.data.Queries
+import top.viclau.magicbox.box.client.http.superset.chart.data.QueryDataRequest
 import top.viclau.magicbox.box.stats.engine.superset.SupersetQueryEngine
+import top.viclau.magicbox.box.stats.ext.superset.queryData
+import top.viclau.magicbox.box.stats.model.ChartDataFilterShim
+import top.viclau.magicbox.box.stats.model.Query
+import top.viclau.magicbox.box.stats.model.support.DatasetResolver
 
 data class QueryResponse(
     val request: QueryRequest,

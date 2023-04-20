@@ -1,4 +1,4 @@
-package top.viclau.magicbox.box.stats.integration
+package top.viclau.magicbox.box.client.http
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -9,7 +9,7 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.gson.*
 import org.slf4j.LoggerFactory
 
-internal fun GsonBuilder.init() = disableHtmlEscaping()
+fun GsonBuilder.initForHttpClient(): GsonBuilder = disableHtmlEscaping()
 
 abstract class BaseHttpClient(logContent: LogContent = LogContent.NONE) : AutoCloseable {
 
@@ -17,13 +17,13 @@ abstract class BaseHttpClient(logContent: LogContent = LogContent.NONE) : AutoCl
 
     // TODO viclau - robustness - ktor client timeout setting
     protected val client: HttpClient
-    protected val _gson: Gson = GsonBuilder().init().create()
+    protected val _gson: Gson = GsonBuilder().initForHttpClient().create()
 
     init {
         client = HttpClient(CIO) {
             install(ContentNegotiation) {
                 gson {
-                    init()
+                    initForHttpClient()
                 }
             }
             install(Logging) {

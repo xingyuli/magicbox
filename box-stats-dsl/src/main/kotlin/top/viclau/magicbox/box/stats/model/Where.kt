@@ -8,7 +8,7 @@
 package top.viclau.magicbox.box.stats.model
 
 // TODO viclau solve engine specific dependency
-import top.viclau.magicbox.box.stats.integration.superset.chart.data.ChartDataFilter
+import top.viclau.magicbox.box.client.http.superset.chart.data.ChartDataFilter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

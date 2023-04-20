@@ -5,7 +5,7 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-package top.viclau.magicbox.box.stats.integration.superset.chart.data
+package top.viclau.magicbox.box.client.http.superset.chart.data
 
 
 data class ChartDataFilter(

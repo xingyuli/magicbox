@@ -1,4 +1,4 @@
-package top.viclau.magicbox.box.stats.integration.ladder.qt
+package top.viclau.magicbox.box.client.http.ladder.qt
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

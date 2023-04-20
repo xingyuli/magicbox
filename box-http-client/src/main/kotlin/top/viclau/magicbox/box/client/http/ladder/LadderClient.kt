@@ -1,15 +1,15 @@
-package top.viclau.magicbox.box.stats.integration.ladder
+package top.viclau.magicbox.box.client.http.ladder
 
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import top.viclau.magicbox.box.stats.integration.BaseHttpClient
-import top.viclau.magicbox.box.stats.integration.LogContent
-import top.viclau.magicbox.box.stats.integration.ladder.qt.GetDetailResponseData
-import top.viclau.magicbox.box.stats.integration.ladder.qt.QueryDataRequest
-import top.viclau.magicbox.box.stats.integration.ladder.user.LoginRequest
+import top.viclau.magicbox.box.client.http.BaseHttpClient
+import top.viclau.magicbox.box.client.http.LogContent
+import top.viclau.magicbox.box.client.http.ladder.qt.GetDetailResponseData
+import top.viclau.magicbox.box.client.http.ladder.qt.QueryDataRequest
+import top.viclau.magicbox.box.client.http.ladder.user.LoginRequest
 
 class LadderClient(private val config: Config, logContent: LogContent = LogContent.NONE) : BaseHttpClient(logContent) {
 
