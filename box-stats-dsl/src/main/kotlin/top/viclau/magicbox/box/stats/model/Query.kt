@@ -161,7 +161,7 @@ class Query<DEST_TYPE : Any>(
 
         }
 
-        class Builder(private val ratePrecision: Int) : () -> Config {
+        class Builder(private val ratePrecision: Int = 2) : () -> Config {
 
             private val engineConfigs = mutableMapOf<KClass<*>, QueryEngine.Config<*>>()
 
