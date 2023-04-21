@@ -11,7 +11,7 @@ import top.viclau.magicbox.box.stats.model.Query
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 
-typealias DimensionValue = List<String>
+internal typealias DimensionValue = List<String>
 
 class CombinedMetrics(val dimensionValue: DimensionValue) {
 

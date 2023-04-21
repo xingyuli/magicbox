@@ -7,9 +7,7 @@
 
 package top.viclau.magicbox.box.stats.dsl
 
-import top.viclau.magicbox.box.stats.model.AliasedProperty
-import top.viclau.magicbox.box.stats.model.ComputedProperty
-import top.viclau.magicbox.box.stats.model.Select
+import top.viclau.magicbox.box.stats.model.*
 import java.math.BigDecimal
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
@@ -18,7 +16,7 @@ class SelectStep<DEST_TYPE : Any>(private val dsl: DslBuilder<DEST_TYPE>) : Buil
 
     private lateinit var selectWhere: SelectWhereStepTuple<DEST_TYPE>
 
-    internal val where: WhereStep<DEST_TYPE> get() = selectWhere.where
+    internal val where: WhereStep<DEST_TYPE, *> get() = selectWhere.where
 
     private val aliasedPropertyBuilders = mutableListOf<AliasedPropertyBuilder<*, DEST_TYPE>>()
     private val computedPropertyBuilders = mutableListOf<ComputedPropertyBuilder<*, *, *, DEST_TYPE>>()
@@ -31,12 +29,16 @@ class SelectStep<DEST_TYPE : Any>(private val dsl: DslBuilder<DEST_TYPE>) : Buil
         computedPropertyBuilders.add(builder)
     }
 
-    fun where(builder: WhereStep<DEST_TYPE>.Scope.() -> Unit): WhereStep<DEST_TYPE> {
+    fun <S : DialectScope, DIALECT : QueryDialect<*, S, *>> where(
+        dialect: DIALECT,
+        builder: S.() -> Unit
+    ): WhereStep<DEST_TYPE, *> {
         if (this::selectWhere.isInitialized) {
             throw IllegalStateException("`where` should be called exactly once")
         }
 
-        selectWhere = SelectWhereStepTuple(this, WhereStep(dsl).apply { Scope().builder() })
+        val scope = dialect()
+        selectWhere = SelectWhereStepTuple(this, WhereStep(dsl, dialect, scope).apply { scope.builder() })
         dsl.addSelectWhere(selectWhere)
 
         return selectWhere.where
@@ -68,9 +70,10 @@ class SelectStep<DEST_TYPE : Any>(private val dsl: DslBuilder<DEST_TYPE>) : Buil
 
     }
 
-    inner class WhereableScope internal constructor() : Scope() {
-        fun where(builder: WhereStep<DEST_TYPE>.Scope.() -> Unit) {
-            this@SelectStep.where(builder)
+    inner class WhereableScope<S : DialectScope, DIALECT : QueryDialect<*, S, *>> internal constructor(private val dialect: DIALECT) :
+        Scope() {
+        fun where(builder: S.() -> Unit) {
+            this@SelectStep.where(dialect, builder)
         }
     }
 

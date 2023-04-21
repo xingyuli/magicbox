@@ -14,18 +14,18 @@ import top.viclau.magicbox.box.stats.dsl.WhereStep
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 
-fun <DEST_TYPE : Any> WhereStep<DEST_TYPE>.groupBy(
+fun <DEST_TYPE : Any> WhereStep<DEST_TYPE, *>.groupBy(
     by: KProperty1<*, *>,
     `as`: KMutableProperty1<DEST_TYPE, String?>
 ): GroupStep<DEST_TYPE> = groupBy(by) { `as`(`as`) }
 
-fun <DEST_TYPE : Any> WhereStep<DEST_TYPE>.groupBy(
+fun <DEST_TYPE : Any> WhereStep<DEST_TYPE, *>.groupBy(
     by: KProperty1<*, *>,
     builder: GroupByExtractStringBuilder<DEST_TYPE>.Scope.() -> Unit
 ): GroupStep<DEST_TYPE> =
     groupBy(by, dimensionRecordMapper = { it }, dimensionValue = { it }) { extractString().builder() }
 
-fun <R : Any, DEST_TYPE : Any> WhereStep<DEST_TYPE>.groupBy(
+fun <R : Any, DEST_TYPE : Any> WhereStep<DEST_TYPE, *>.groupBy(
     by: KProperty1<*, *>,
     dimensionRecordMapper: (List<String>) -> List<R>,
     dimensionValue: (R) -> Any?,

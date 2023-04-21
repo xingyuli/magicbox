@@ -14,9 +14,13 @@ import kotlin.reflect.KProperty1
 
 data class QueryRequest(
     val id: ReqId,
+
+    /* ***** originated from: Select, Where ***** */
     val dataset: KClass<*>,
     val where: Where,
-    val metrics: MutableList<MetricRequest> = mutableListOf()
+    val metrics: MutableList<MetricRequest> = mutableListOf(),
+
+    val group: Group<*>
 ) {
 
     fun addMetric(m: MetricRequest) {
@@ -56,7 +60,8 @@ class AssembleOperator<DEST_TYPE : Any>(query: Query<DEST_TYPE>) :
                         QueryRequest(
                             ReqId(i, ownerType.simpleName!!),
                             ownerType,
-                            sw.where
+                            sw.where,
+                            group = query.group
                         )
                     }.addMetric(MetricRequest(prop, contributor))
                 }

@@ -8,6 +8,7 @@
 package top.viclau.magicbox.box.client.http.superset
 
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -18,8 +19,10 @@ import top.viclau.magicbox.box.client.http.superset.chart.data.QueryDataRequest
 import top.viclau.magicbox.box.client.http.superset.security.LoginRequest
 import java.util.concurrent.ConcurrentHashMap
 
-class SupersetClient(private val config: Config, logContent: LogContent = LogContent.NONE) :
-    BaseHttpClient(logContent) {
+class SupersetClient(
+    private val config: Config,
+    logContent: LogContent = DEFAULT_LOG_CONTENT
+) : BaseHttpClient(config.requestTimeoutMillis, logContent) {
 
     // TODO add module box-common: LoadOnFailureCache
     private val accessToken: String by lazy {
@@ -30,7 +33,11 @@ class SupersetClient(private val config: Config, logContent: LogContent = LogCon
         /**
          * In shape of: `http|https://host/api/v1`
          */
-        val endpoint: String, val username: String, val password: String, val provider: String = "db"
+        val endpoint: String,
+        val username: String,
+        val password: String,
+        val provider: String = "db",
+        val requestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS
     )
 
     private fun securityApi() = SecurityApi()
@@ -76,8 +83,18 @@ class SupersetClient(private val config: Config, logContent: LogContent = LogCon
 
         private val base = "${config.endpoint}/chart"
 
-        suspend fun queryData(request: QueryDataRequest, requestId: String? = null): QueryDataRequest.Response {
+        suspend fun queryData(
+            request: QueryDataRequest,
+            requestId: String? = null,
+            requestTimeoutMillis: Long? = null
+        ): QueryDataRequest.Response {
             val response = client.post("${base}/data") {
+                requestTimeoutMillis?.let {
+                    timeout {
+                        this.requestTimeoutMillis = it
+                    }
+                }
+
                 bearerAuth(accessToken)
 
                 contentType(ContentType.Application.Json)
@@ -99,7 +116,7 @@ class SupersetClient(private val config: Config, logContent: LogContent = LogCon
 
             if (response.status != HttpStatusCode.OK) {
                 // TODO fallback support when failure (including timed out)
-                // TODO viclau use custom exception
+                // TODO viclau p:low - use custom exception
                 throw RuntimeException(response.bodyAsText())
             }
 

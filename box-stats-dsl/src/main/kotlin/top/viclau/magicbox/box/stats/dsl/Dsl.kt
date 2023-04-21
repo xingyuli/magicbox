@@ -10,18 +10,24 @@ package top.viclau.magicbox.box.stats.dsl
 import top.viclau.magicbox.box.stats.model.*
 import kotlin.reflect.KClass
 
-typealias Builder<T> = () -> T
+internal typealias Builder<T> = () -> T
 
 interface Selectable<DEST_TYPE : Any> {
+
     fun select(builder: SelectStep<DEST_TYPE>.Scope.() -> Unit): SelectStep<DEST_TYPE>
-    fun selectWhere(builder: SelectStep<DEST_TYPE>.WhereableScope.() -> Unit): WhereStep<DEST_TYPE>
+
+    fun <S : DialectScope, DIALECT : QueryDialect<*, S, *>> selectWhere(
+        dialect: DIALECT,
+        builder: SelectStep<DEST_TYPE>.WhereableScope<S, DIALECT>.() -> Unit
+    ): WhereStep<DEST_TYPE, S>
+
 }
 
 interface Executable<DEST_TYPE> {
     fun execute(): PageResult<DEST_TYPE>
 }
 
-class SelectWhereStepTuple<DEST_TYPE : Any>(val select: SelectStep<DEST_TYPE>, val where: WhereStep<DEST_TYPE>)
+class SelectWhereStepTuple<DEST_TYPE : Any>(val select: SelectStep<DEST_TYPE>, val where: WhereStep<DEST_TYPE, *>)
 
 class DslBuilder<DEST_TYPE : Any>(private val destTypeClass: KClass<DEST_TYPE>, val config: Query.Config) : Selectable<DEST_TYPE>,
     Builder<Query<DEST_TYPE>> {
@@ -40,8 +46,14 @@ class DslBuilder<DEST_TYPE : Any>(private val destTypeClass: KClass<DEST_TYPE>, 
     override fun select(builder: SelectStep<DEST_TYPE>.Scope.() -> Unit): SelectStep<DEST_TYPE> =
         SelectStep(this).apply { Scope().builder() }
 
-    override fun selectWhere(builder: SelectStep<DEST_TYPE>.WhereableScope.() -> Unit): WhereStep<DEST_TYPE> =
-        SelectStep(this).apply { WhereableScope().builder() }.where
+    override fun <S : DialectScope, DIALECT : QueryDialect<*, S, *>> selectWhere(
+        dialect: DIALECT,
+        builder: SelectStep<DEST_TYPE>.WhereableScope<S, DIALECT>.() -> Unit
+    ): WhereStep<DEST_TYPE, S> {
+        val selectStep = SelectStep(this).apply { WhereableScope(dialect).builder() }
+        @Suppress("UNCHECKED_CAST")
+        return selectStep.where as WhereStep<DEST_TYPE, S>
+    }
 
     override fun invoke(): Query<DEST_TYPE> = Query(
         destTypeClass,

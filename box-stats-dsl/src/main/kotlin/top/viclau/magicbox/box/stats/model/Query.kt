@@ -10,12 +10,15 @@ package top.viclau.magicbox.box.stats.model
 import com.google.gson.GsonBuilder
 import top.viclau.magicbox.box.stats.ext.ownerType
 import top.viclau.magicbox.box.stats.model.metadata.Dataset
-import top.viclau.magicbox.box.stats.model.operator.*
+import top.viclau.magicbox.box.stats.model.operator.AssembleOperator
+import top.viclau.magicbox.box.stats.model.operator.BindOperator
+import top.viclau.magicbox.box.stats.model.operator.CombineOperator
+import top.viclau.magicbox.box.stats.model.operator.QueryOperator
 import top.viclau.magicbox.box.stats.model.support.DatasetResolver
-import top.viclau.magicbox.box.stats.engine.QueryEngine
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.reflect.KClass
+import kotlin.reflect.KClassifier
 import kotlin.reflect.KProperty1
 
 class SelectWhere<DEST_TYPE>(val select: Select<DEST_TYPE>, val where: Where)
@@ -27,7 +30,7 @@ class Query<DEST_TYPE : Any>(
     val config: Config,
     val selectWheres: List<SelectWhere<DEST_TYPE>>,
     val group: Group<DEST_TYPE>,
-    // TODO viclau how to paging if `order` is not specified?
+    // TODO viclau t:core p:middle - how to paging if `order` is not specified?
     private val order: Order?,
     private val page: PageReq,
     private val summary: Summary<DEST_TYPE>?
@@ -122,18 +125,20 @@ class Query<DEST_TYPE : Any>(
 
     class Config private constructor(
         ratePrecision: Int,
-        /**
-         * config type to config
-         */
-        private val engineConfigs: Map<KClass<*>, QueryEngine.Config<*>>
+        private val configTypeToConfigs: Map<KClass<*>, QueryEngine.Config<*>>,
+        private val engineTypeToConfigs: Map<KClassifier, QueryEngine.Config<*>>
     ) {
 
         val rateFn: (Number?, Number?) -> BigDecimal = DivideAsDecimal(ratePrecision)
 
         fun <T : QueryEngine.Config<*>> getEngineConfig(configType: KClass<T>): T? {
-            val engineConfig = engineConfigs[configType]
+            val engineConfig = configTypeToConfigs[configType]
             @Suppress("UNCHECKED_CAST")
             return engineConfig as? T
+        }
+
+        fun <T : QueryEngine<*>> getEngineConfigByEngineType(engineType: KClass<T>): QueryEngine.Config<*>? {
+            return engineTypeToConfigs[engineType]
         }
 
         class DivideAsDecimal(private val precision: Int) : (Number?, Number?) -> BigDecimal {
@@ -163,16 +168,19 @@ class Query<DEST_TYPE : Any>(
 
         class Builder(private val ratePrecision: Int = 2) : () -> Config {
 
-            private val engineConfigs = mutableMapOf<KClass<*>, QueryEngine.Config<*>>()
+            private val configTypeToConfigs = mutableMapOf<KClass<*>, QueryEngine.Config<*>>()
+            private val engineTypeToConfigs = mutableMapOf<KClassifier, QueryEngine.Config<*>>()
 
+            // TODO viclau t:core p:high - register engine directly, to avoid primary constructor based instantiation
             fun withEngineConfig(config: QueryEngine.Config<*>): Builder = apply {
-//                val configSuperType = config::class.supertypes.first { it.classifier == QueryEngine.Config::class }
-//                val configForEngineType = configSuperType.arguments[0].type!!.classifier!!
-//                engineConfigs[configForEngineType] = config
-                engineConfigs[config::class] = config
+                configTypeToConfigs[config::class] = config
+
+                val configSuperType = config::class.supertypes.first { it.classifier == QueryEngine.Config::class }
+                val configForEngineType = configSuperType.arguments[0].type!!.classifier!!
+                engineTypeToConfigs[configForEngineType] = config
             }
 
-            override fun invoke(): Config = Config(ratePrecision, engineConfigs)
+            override fun invoke(): Config = Config(ratePrecision, configTypeToConfigs, engineTypeToConfigs)
 
         }
 

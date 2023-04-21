@@ -1,6 +1,7 @@
 package top.viclau.magicbox.box.client.http.ladder
 
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -11,7 +12,10 @@ import top.viclau.magicbox.box.client.http.ladder.qt.GetDetailResponseData
 import top.viclau.magicbox.box.client.http.ladder.qt.QueryDataRequest
 import top.viclau.magicbox.box.client.http.ladder.user.LoginRequest
 
-class LadderClient(private val config: Config, logContent: LogContent = LogContent.NONE) : BaseHttpClient(logContent) {
+class LadderClient(
+    private val config: Config,
+    logContent: LogContent = DEFAULT_LOG_CONTENT
+) : BaseHttpClient(config.requestTimeoutMillis, logContent) {
 
     private val token: String by lazy {
         runBlocking { userApi().login() }.token
@@ -21,7 +25,10 @@ class LadderClient(private val config: Config, logContent: LogContent = LogConte
         /**
          * In shape of: `http|https://host/api`
          */
-        val endpoint: String, val username: String, val password: String
+        val endpoint: String,
+        val username: String,
+        val password: String,
+        val requestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS
     )
 
     private fun userApi() = UserApi()
@@ -48,7 +55,7 @@ class LadderClient(private val config: Config, logContent: LogContent = LogConte
         private val base = "${config.endpoint}/qt"
 
         suspend fun getDetail(id: Long): GetDetailResponseData {
-            // TODO viclau remove duplication for token setting
+            // TODO viclau p:low - remove duplication for token setting
             val response = client.get("${base}/detail") {
                 bearerAuth(token)
 
@@ -59,8 +66,18 @@ class LadderClient(private val config: Config, logContent: LogContent = LogConte
             return response.toResponseData()
         }
 
-        suspend fun queryData(request: QueryDataRequest, requestId: String? = null): QueryDataRequest.ResponseData {
+        suspend fun queryData(
+            request: QueryDataRequest,
+            requestId: String? = null,
+            requestTimeoutMillis: Long? = null
+        ): QueryDataRequest.ResponseData {
             val response = client.post("${base}/query_data") {
+                requestTimeoutMillis?.let {
+                    timeout {
+                        this.requestTimeoutMillis = it
+                    }
+                }
+
                 bearerAuth(token)
 
                 contentType(ContentType.Application.Json)
@@ -77,7 +94,7 @@ class LadderClient(private val config: Config, logContent: LogContent = LogConte
     }
 
     private suspend inline fun <reified T> HttpResponse.toResponseData(): T {
-        // TODO viclau use custom exception
+        // TODO viclau p:low - use custom exception
         if (status != HttpStatusCode.OK) {
             throw RuntimeException("http status is $status, with response body: ${bodyAsText()}")
         }
